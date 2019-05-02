@@ -2,7 +2,7 @@
 title: 'Class 8: Machine Learning'
 author: "Enrique Sandoval"
 date: "4/25/2019"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
@@ -228,11 +228,6 @@ head(x)
 ```{r}
 nrow(x)
 ncol(x)
-```
-
-#CheckingData
-```{r}
-View(x)
 ```
 
 #Spotting Differences and Trends 
