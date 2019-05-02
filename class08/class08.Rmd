@@ -1,0 +1,292 @@
+---
+title: 'Class 8: Machine Learning'
+author: "Enrique Sandoval"
+date: "4/25/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##K-means clustering 
+
+lets start with an example of running **kmeans()** function 
+
+```{r}
+#Generate some example data for clustering 
+tmp <- c(rnorm(30,-3), rnorm(30,3))
+x <- cbind(x=tmp, y=rev(tmp))
+plot(x)
+```
+
+```{r}
+km<- kmeans(x, centers=2, nstart= 20)
+km
+```
+
+
+
+
+#To Do:
+-Use the kmeans() function setting k to 2 and nstart=20
+-Inspect/print the results
+
+>Q. How many points are in each cluster?
+  #30 points in each cluster
+  
+```{r}
+km$size
+```
+
+>Q. What ‘component’ of your result object details
+- cluster size?
+#2 clusters, defined by center
+- cluster assignment/membership?
+#clustering vector, which points got assigned to each 
+- cluster center?
+#cluster mean
+
+```{r}
+km$cluster 
+```
+
+```{r}
+km$centers
+```
+
+>Plot x colored by the kmeans cluster assignment and
+add cluster centers as blue points
+
+```{r}
+plot(x, col=km$cluster)
+points(km$centers, pch= 18, col= "blue", cex= 3)
+```
+
+
+#Hierarchial clustering example 
+
+```{r}
+#Distance matrix calculation 
+d<- dist(x)
+
+#Clustering 
+hc<- hclust(d)
+plot(hc)
+```
+
+
+
+```{r}
+plot(hc)
+abline(h= 6, col= "red")
+```
+
+
+```{r}
+cutree(hc, h= 6)
+```
+
+
+```{r}
+cutree(hc, k=2)
+```
+
+
+```{r}
+cutree(hc, k=3)
+```
+
+#Another exmample but more real life like with overlapping 
+```{r}
+x <- rbind(
+matrix(rnorm(100, mean=0, sd = 0.3), ncol = 2), # c1
+matrix(rnorm(100, mean = 1, sd = 0.3), ncol = 2), # c2
+matrix(c(rnorm(50, mean = 1, sd = 0.3), # c3
+rnorm(50, mean = 0, sd = 0.3)), ncol = 2))
+colnames(x) <- c("x", "y")
+# Step 2. Plot the data without clustering
+plot(x)
+# Step 3. Generate colors for known clusters
+# (just so we can compare to hclust results)
+col <- as.factor( rep(c("c1","c2","c3"), each=50) )
+plot(x, col=col)
+```
+
+#Q. Use the dist(), hclust(), plot() and cutree()
+functions to return 2 and 3 clusters
+```{r}
+hc<- hclust(dist(x))
+plot(hc)
+abline(h=2, col= "red")
+abline(h=2.8, col= "green")
+```
+
+
+```{r}
+gp2<- cutree(hc, k=2)
+gp3<- cutree(hc, k=3)
+```
+
+```{r}
+gp2
+```
+
+```{r}
+gp3
+```
+
+
+#Q. How does this compare to your known 'col' groups?
+```{r}
+table(gp2)
+```
+
+```{r}
+table(gp3)
+```
+
+
+#PCA: Principal Component Analysis 
+
+We will use the **prcomp()**
+```{r}
+#Example data 
+## You can also download this file from the class website!
+mydata <- read.csv("https://tinyurl.com/expression-CSV",
+row.names=1)
+head(mydata)
+```
+
+
+100 genes in dataset 
+```{r}
+nrow(mydata)
+```
+
+
+```{r}
+ncol(mydata)
+```
+
+
+```{r}
+colnames(mydata)
+```
+
+#Run our PCA analysis on the trasnpose of the data
+```{r}
+pca<- prcomp(t(mydata), scale= TRUE)
+pca
+```
+
+#a basic PC1 vs PC2 2-D plot 
+```{r}
+plot(pca$x[,1], pca$x[,2])
+```
+
+
+#Percent variance is often more informative to look at 
+Calculate the percent variance in each PC
+```{r}
+pca.var <- pca$sdev^2
+pca.var.per <- round(pca.var/sum(pca.var)*100, 1)
+pca.var.per
+```
+
+
+```{r}
+barplot(pca.var.per, main="Scree Plot",
+xlab="Principal Component", ylab="Percent Variation")
+```
+
+#More useful plot 
+```{r}
+## A vector of colors for wt and ko samples
+colvec <- colnames(mydata)
+colvec[grep("wt", colvec)] <- "red"
+colvec[grep("ko", colvec)] <- "blue"
+plot(pca$x[,1], pca$x[,2], col=colvec, pch=16,
+xlab=paste0("PC1 (", pca.var.per[1], "%)"),
+ylab=paste0("PC2 (", pca.var.per[2], "%)"))
+```
+
+
+#England Data example 
+```{r}
+x <- read.csv("UK_foods.csv")
+head(x)
+```
+
+#food stuff as rownames 
+```{r}
+x <- read.csv("UK_foods.csv", row.names= 1)
+head(x)
+```
+
+#row and col number 
+```{r}
+nrow(x)
+ncol(x)
+```
+
+#CheckingData
+```{r}
+View(x)
+```
+
+#Spotting Differences and Trends 
+```{r}
+barplot(as.matrix(x), beside=F, col=rainbow(nrow(x)))
+```
+
+#Chaning beside from T to F keeps all the data together for 1 plot per country 
+
+#PCA to the rescue 
+```{r}
+pca<- prcomp(t(x))
+summary(pca)
+```
+
+#PC1 vs PC2
+```{r}
+plot(pca$x[,1], pca$x[,2], xlab="PC1", ylab="PC2", xlim=c(-270,500))
+text(pca$x[,1], pca$x[,2], colnames(x))
+```
+
+#Customized colors 
+```{r}
+
+colnames<- c("orange", "red", "blue", "darkgreen")
+
+```
+
+
+#Digging Deeper
+```{r}
+v <- round( pca$sdev^2/sum(pca$sdev^2) * 100 )
+v
+```
+
+```{r}
+z <- summary(pca)
+z$importance
+```
+
+```{r}
+## Lets focus on PC1 as it accounts for > 90% of variance 
+par(mar=c(10, 3, 0.35, 0))
+barplot( pca$rotation[,1], las=2 )
+```
+
+
+
+
+
+
+
+
+
+
+
+
