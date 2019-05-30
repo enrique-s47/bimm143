@@ -1,0 +1,112 @@
+---
+title: "Class 11: Structural Bioinformatics"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## The PDB Database 
+
+The [PDB] (http://www.rcsb.org/) is the main repository for biomolecular structure data. 
+
+Here we examine the contents of the PDB:
+
+```{r}
+db<- read.csv("Data Export Summary.csv", row.names=1)
+head(db)
+```
+
+How many are X-ray
+```{r}
+(db$Total/sum(db$Total)) *100
+```
+
+What percent are protein 
+```{r}
+sum(db$Proteins/sum(db$Total)) *100
+```
+
+We could also try 
+"Addins"> "Paste as data.frame"
+```{r}
+library(datapasta)
+
+tmp <-data.frame(stringsAsFactors=FALSE,
+   Experimental.Method = c("X-Ray", "Other", "NMR", "Multi Method",
+                           "Electron Microscopy", "Total"),
+              Proteins = c(126880, 256, 11062, 129, 2277, 140604),
+         Nucleic.Acids = c(2012, 4, 1279, 5, 31, 3331),
+    ProteinComplex = c(6547, 6, 259, 2, 800, 7614),
+                 Other = c(8, 13, 8, 1, 0, 30),
+                 Total = c(135447, 279, 12608, 137, 3108, 151579)
+)
+
+tmp
+
+```
+
+
+```{r}
+
+```
+
+There are 1157 as of 2019-05-07 See:
+http://www.rcsb.org/pdb/results/results.do?tabtoshow=Current&qrid=81599ADF
+
+
+## Section 3 Using Bio3d
+```{r}
+library(bio3d)
+
+pdb<- read.pdb("1hsg") 
+pdb
+```
+
+## Q6. How many amino acid residues are there in this pdb object and what are the two nonprotein
+residues? 
+Theres 198 protein residues 
+The two nonprotein residues are HOH (127) and MK1(1)
+
+## Q7. What type of R object is pdb$atom? HINT: You can always use the str() function to get a useful summery of any R object.
+
+```{r}
+attributes(pdb)
+```
+
+```{r}
+str(pdb$atom)
+```
+
+
+```{r}
+pdb$atom$resid
+```
+
+
+Atom selection is done via the function **atom.select()**
+
+```{r}
+prot.pdb<- atom.select(pdb, "protein", value= TRUE)
+write.pdb(prot.pdb, file="1hsg_protein.pdb")
+```
+
+
+```{r}
+lig.pdb<- atom.select(pdb, "ligand", value= TRUE)
+write.pdb(lig.pdb, file = "1hsg_protein.pdb")
+```
+
+
+Section 5
+
+
+```{r}
+aa <- get.seq("1ake_A")
+```
+
+```{r}
+b <- blast.pdb(aa)
+```
+
