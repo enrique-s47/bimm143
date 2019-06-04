@@ -1,0 +1,71 @@
+---
+title: "Class 12: Structural Bioinformatics (Pt 2)"
+author: "Enrique Sandoval"
+date: "5/9/2019"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Setup for Docking 
+
+We will first prepare our HIV-Pr system for drug docking by making a protein only PDB format file(i.e. we will remove water, existing ligands, etc)
+
+```{r}
+library(bio3d)
+file<- get.pdb("1hsg")
+```
+
+```{r}
+pdb<- read.pdb(file)
+pdb
+```
+
+ Call: read.pdb(file=file)
+ 
+```{r}
+prot<- atom.select(pdb, "protein", value = TRUE) 
+write.pdb(prot, file= "1hsg_protein.pdb")
+prot
+```
+ 
+```{r}
+lig<- atom.select(pdb, "ligand", value= TRUE)
+write.pdb(lig, file= "1hsg_ligand.pdb")
+lig
+```
+ 
+ We wil load these into ADT to add hydrogen and make PDBQT files for each 
+ 
+ Now we will run outdoc vina with the cmd
+ 
+## Process our docking results 
+
+```{r}
+library(bio3d)
+res <- read.pdb("all.pdbqt", multi=TRUE)
+write.pdb(res, "results.pdb")
+```
+
+
+
+## Normal mode analysis for flexibility prediction 
+```{r}
+pdb <- read.pdb("1hel")
+modes <- nma( pdb )
+m7 <- mktrj(modes, mode=7, file="mode_7.pdb")
+```
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

@@ -1,0 +1,141 @@
+---
+title: "Class 17"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Set up Cytoscape and R connection 
+
+We will use the **RCy3** and **igraph** packages in class. The first is from the bioconductor, the second from CRAN.
+
+```{r}
+library(RCy3)
+library(igraph)
+```
+
+Let's check to see if we can connect to Cytoscape 
+```{r}
+# Test the connection to Cytoscape.
+cytoscapePing()
+```
+
+```{r}
+g <- makeSimpleIgraph()
+createNetworkFromIgraph(g,"myGraph")
+```
+
+Change the network display style in the cytoscape 
+```{r}
+setVisualStyle("Marquee")
+```
+
+```{r}
+fig <- exportImage(filename="demo_marquee", type="png", height=350)
+
+knitr::include_graphics("./demo_marquee.png")
+```
+
+
+```{r}
+g
+```
+
+```{r}
+plot(g)
+```
+
+
+```{r}
+## scripts for processing located in "inst/data-raw/"
+prok_vir_cor <- read.delim("virus_prok_cor_abundant.tsv", stringsAsFactors = FALSE)
+
+## Have a peak at the first 6 rows
+head(prok_vir_cor)
+```
+
+Use the igraph function **graph.data.frame()** to make a network graph 
+```{r}
+g <- graph.data.frame(prok_vir_cor, directed = FALSE)
+```
+
+```{r}
+class(g)
+```
+
+```{r}
+plot(g, vertex.label=NA)
+```
+
+```{r}
+plot(g, vertex.size=3, vertex.label=NA)
+```
+
+
+Send this network to ctyoscape 
+```{r}
+createNetworkFromIgraph(g,"myIgraph")
+```
+
+Network querys
+Note that we can query (and set) vertex and edge attributes with the V() and E() functions respectively:
+```{r}
+V(g)
+```
+
+```{r}
+E(g)
+```
+
+## Network community detection
+Community structure detection algorithms try to find dense subgraphs within larger network graphs (i.e. clusters of well connected nodes that are densely connected themselves but sparsely connected to other nodes outside the cluster) . Here we use the classic Girvan & Newman betweenness clustering method. The igraph package has lots of different community detection algorithms (i.e. different methods for finding communities).
+
+```{r}
+cb <- cluster_edge_betweenness(g)
+cb
+```
+
+```{r}
+plot(cb, y=g, vertex.label=NA,  vertex.size=3)
+```
+
+You can extract a cluster/community membership vector for further inspection with the membership() function:
+
+```{r}
+head( membership(cb) )
+```
+
+## Node degree
+The degree of a node or vertex is its most basic structural property, the number of its adjacent edges. Here we calculate and plot the node degree distribution.
+```{r}
+# Calculate and plot node degree of our network
+d <- degree(g)
+hist(d, breaks=30, col="lightblue", main ="Node Degree Distribution")
+```
+
+```{r}
+plot( degree_distribution(g), type="h" )
+```
+
+## Centrality analysis
+Centrality gives an estimation on how important a node or edge is for the connectivity (or the information flow) of a network. It is a particularly useful parameter in signaling networks and it is often used when trying to find drug targets for example.
+
+Centrality analysis often aims to answer the following question: Which nodes are the most important and why?
+
+```{r}
+pr <- page_rank(g)
+head(pr$vector)
+```
+
+## Read taxonomic classification for network annotation
+Since these are data from small, microscopic organisms that were sequenced using shotgun sequencing, we rely on the classification of the sequences to know what kind of organisms are in the samples. In this case the bacterial viruses (bacteriophage), were classified by Basic Local Alignment Search Tool (BLAST http://blast.ncbi.nlm.nih.gov/Blast.cgi) by searching for their closest sequence in the RefSeq database (see methods in Brum et al. (2015)). The prokaryotic taxonomic classifications were determined using the SILVA database.
+
+```{r}
+ phage_id_affiliation <- read.delim("phage_ids_with_affiliation.tsv")
+head(phage_id_affiliation)
+bac_id_affi <- read.delim("prok_tax_from_silva.tsv", stringsAsFactors = FALSE)
+head(bac_id_affi)
+```
+

@@ -1,0 +1,106 @@
+---
+title: "Class 18: Investigating cancer genomics datasets"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Exploring the Cancer Genome Atlas
+
+Install the packages we need 
+
+```{r}
+library(GenomicDataCommons)
+library(TCGAbiolinks)
+library(maftools)
+```
+
+Can we talk with the NCI
+
+```{r}
+GenomicDataCommons::status()
+```
+
+##  Querying the GDC from R
+
+```{r}
+cases_by_project <- cases() %>%
+  facet("project.project_id") %>%
+  aggregations()
+head(cases_by_project)
+```
+
+
+```{r}
+x <- cases_by_project$project.project_id
+
+# Make a custom color vector for our plot
+colvec <- rep("lightblue", nrow(x))
+colvec[29] <- "red"
+
+# Plot with 'log' for y axis and rotate labels with 'las'
+#par(___)  
+barplot(x$doc_count, names.arg=x$key, log="y", col=colvec, las=2)
+```
+
+## Part 2: Designing a personalized cancer vaccine
+
+Read in FASTA protein file sequence for both healthy and tumor tissue
+
+```{r}
+bio3d::read.fasta("lecture18_sequences.fa")
+```
+
+```{r}
+library(bio3d)
+seqs <- read.fasta("lecture18_sequences.fa")
+seqs
+```
+
+## Identify tumor specific 9-mer peptides
+Now to find where the sequences differ 
+```{r}
+ide<- conserv(seqs, method= "identity")
+ide
+```
+
+```{r}
+mis.match.sites <- which(ide< 1)
+gap.sites <- gap.inspect(seqs)$t.inds
+```
+
+```{r}
+gap.sites
+```
+
+
+```{r}
+tumor.sites<- mis.match.sites[!mis.match.sites%in%gap.sites]
+tumor.sites
+```
+
+Now get the sequence with all possible 9-mers
+
+```{r}
+start.position <- tumor.sites- 8
+end.position <- tumor.sites +8
+```
+
+```{r}
+start.position[1]: end.position[1]
+```
+
+Get the tumor sequence
+
+```{r}
+seqs$ali[2, start.position[1]: end.position[1] ]
+```
+
+
+
+
+
+
+
