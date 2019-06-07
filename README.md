@@ -20,7 +20,7 @@ This is my classwork from [BIMM143 Spring 2019](https://bioboot.github.io/bimm14
 
 -Class 14: [Genome Informatics II](https://raw.githubusercontent.com/enrique-s47/bimm143/master/class14/class14.md)
 
--Class 15: [Pathway Analysis and the Interpretation of Gene Lists]
+-Class 15: [Pathway Analysis and the Interpretation of Gene Lists](https://github.com/enrique-s47/bimm143/blob/master/class15/class15.md)
 
 -Class 16: [Introduction to UNIX]
 
