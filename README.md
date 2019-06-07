@@ -16,7 +16,7 @@ This is my classwork from [BIMM143 Spring 2019](https://bioboot.github.io/bimm14
 
 -Class 12: [Structural Bioinformatics II](https://github.com/enrique-s47/bimm143/blob/master/class12/class12.md)
 
--Class 13: [Genome Informatics I]
+-Class 13: [Genome Informatics I](https://github.com/enrique-s47/bimm143/blob/master/class13/class13.md)
 
 -Class 14: [Genome Informatics II]
 
