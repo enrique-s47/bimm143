@@ -18,7 +18,7 @@ This is my classwork from [BIMM143 Spring 2019](https://bioboot.github.io/bimm14
 
 -Class 13: [Genome Informatics I](https://github.com/enrique-s47/bimm143/blob/master/class13/class13.md)
 
--Class 14: [Genome Informatics II]
+-Class 14: [Genome Informatics II](https://raw.githubusercontent.com/enrique-s47/bimm143/master/class14/class14.md)
 
 -Class 15: [Pathway Analysis and the Interpretation of Gene Lists]
 
