@@ -136,9 +136,6 @@ and how many are down?
 down.ind <- mycounts$log2fc < (-2)
 ```
 
-```{r}
-sum(down.inds)
-```
 
 ```{r}
 head(mycounts[up.inds,])
