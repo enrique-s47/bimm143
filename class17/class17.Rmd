@@ -19,7 +19,7 @@ library(igraph)
 Let's check to see if we can connect to Cytoscape 
 ```{r}
 # Test the connection to Cytoscape.
-cytoscapePing()
+#cytoscapePing()
 ```
 
 ```{r}
