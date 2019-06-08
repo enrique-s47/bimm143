@@ -24,6 +24,6 @@ This is my classwork from [BIMM143 Spring 2019](https://bioboot.github.io/bimm14
 
 -Class 16: [Introduction to UNIX]
 
--Class 17: [Biological Network Analysis]
+-Class 17: [Biological Network Analysis](https://github.com/enrique-s47/bimm143/blob/master/class17/class17.Rmd)
 
 -Class 18: [Cancer Genomics & Immunoinformatics](https://github.com/enrique-s47/bimm143/blob/master/class18/class18.md)
